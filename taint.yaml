@@ -1,0 +1,200 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"annotations":{},"labels":{"app.kubernetes.io/component":"controller","app.kubernetes.io/instance":"juicefs-csi-driver","app.kubernetes.io/name":"juicefs-csi-driver","app.kubernetes.io/version":"master"},"name":"juicefs-csi-controller","namespace":"kube-system"},"spec":{"replicas":2,"selector":{"matchLabels":{"app":"juicefs-csi-controller","app.kubernetes.io/instance":"juicefs-csi-driver","app.kubernetes.io/name":"juicefs-csi-driver","app.kubernetes.io/version":"master"}},"serviceName":"juicefs-csi-controller","template":{"metadata":{"labels":{"app":"juicefs-csi-controller","app.kubernetes.io/instance":"juicefs-csi-driver","app.kubernetes.io/name":"juicefs-csi-driver","app.kubernetes.io/version":"master"}},"spec":{"containers":[{"args":["--endpoint=$(CSI_ENDPOINT)","--logtostderr","--nodeid=$(NODE_NAME)","--leader-election","--config=/etc/config/config.yaml"],"env":[{"name":"CSI_ENDPOINT","value":"unix:///var/lib/csi/sockets/pluginproxy/csi.sock"},{"name":"NODE_NAME","valueFrom":{"fieldRef":{"fieldPath":"spec.nodeName"}}},{"name":"JUICEFS_MOUNT_NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.namespace"}}},{"name":"POD_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"JUICEFS_MOUNT_PATH","value":"/var/lib/juicefs/volume"},{"name":"JUICEFS_CONFIG_PATH","value":"/var/lib/juicefs/config"}],"image":"juicedata/juicefs-csi-driver:v0.25.2","livenessProbe":{"failureThreshold":5,"httpGet":{"path":"/healthz","port":"healthz"},"initialDelaySeconds":10,"periodSeconds":10,"timeoutSeconds":3},"name":"juicefs-plugin","ports":[{"containerPort":9909,"name":"healthz","protocol":"TCP"}],"resources":{"limits":{"cpu":"1000m","memory":"1Gi"},"requests":{"cpu":"100m","memory":"512Mi"}},"securityContext":{"capabilities":{"add":["SYS_ADMIN"]},"privileged":true},"volumeMounts":[{"mountPath":"/var/lib/csi/sockets/pluginproxy/","name":"socket-dir"},{"mountPath":"/jfs","mountPropagation":"Bidirectional","name":"jfs-dir"},{"mountPath":"/root/.juicefs","mountPropagation":"Bidirectional","name":"jfs-root-dir"},{"mountPath":"/etc/config","name":"juicefs-config"}]},{"args":["--csi-address=$(ADDRESS)","--timeout=60s","--leader-election","--v=5"],"env":[{"name":"ADDRESS","value":"/var/lib/csi/sockets/pluginproxy/csi.sock"}],"image":"registry.k8s.io/sig-storage/csi-provisioner:v2.2.2","name":"csi-provisioner","volumeMounts":[{"mountPath":"/var/lib/csi/sockets/pluginproxy/","name":"socket-dir"}]},{"args":["--csi-address=$(ADDRESS)","--leader-election","--v=2"],"env":[{"name":"ADDRESS","value":"/var/lib/csi/sockets/pluginproxy/csi.sock"}],"image":"registry.k8s.io/sig-storage/csi-resizer:v1.9.0","name":"csi-resizer","volumeMounts":[{"mountPath":"/var/lib/csi/sockets/pluginproxy/","name":"socket-dir"}]},{"args":["--csi-address=$(ADDRESS)","--health-port=$(HEALTH_PORT)"],"env":[{"name":"ADDRESS","value":"/csi/csi.sock"},{"name":"HEALTH_PORT","value":"9909"}],"image":"registry.k8s.io/sig-storage/livenessprobe:v2.11.0","name":"liveness-probe","volumeMounts":[{"mountPath":"/csi","name":"socket-dir"}]}],"priorityClassName":"system-cluster-critical","serviceAccount":"juicefs-csi-controller-sa","tolerations":[{"key":"CriticalAddonsOnly","operator":"Exists"}],"volumes":[{"emptyDir":{},"name":"socket-dir"},{"hostPath":{"path":"/var/lib/juicefs/volume","type":"DirectoryOrCreate"},"name":"jfs-dir"},{"hostPath":{"path":"/var/lib/juicefs/config","type":"DirectoryOrCreate"},"name":"jfs-root-dir"},{"configMap":{"defaultMode":420,"name":"juicefs-csi-driver-config"},"name":"juicefs-config"}]}},"volumeClaimTemplates":[]}}
+  creationTimestamp: "2024-11-08T13:53:59Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: juicefs-csi-driver
+    app.kubernetes.io/name: juicefs-csi-driver
+    app.kubernetes.io/version: master
+  name: juicefs-csi-controller
+  namespace: kube-system
+  resourceVersion: "12288"
+  uid: 025008d6-0209-425a-a2ff-d63f61f887d4
+spec:
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
+  podManagementPolicy: OrderedReady
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: juicefs-csi-controller
+      app.kubernetes.io/instance: juicefs-csi-driver
+      app.kubernetes.io/name: juicefs-csi-driver
+      app.kubernetes.io/version: master
+  serviceName: juicefs-csi-controller
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: juicefs-csi-controller
+        app.kubernetes.io/instance: juicefs-csi-driver
+        app.kubernetes.io/name: juicefs-csi-driver
+        app.kubernetes.io/version: master
+    spec:
+      containers:
+      - args:
+        - --endpoint=$(CSI_ENDPOINT)
+        - --logtostderr
+        - --nodeid=$(NODE_NAME)
+        - --leader-election
+        - --config=/etc/config/config.yaml
+        env:
+        - name: CSI_ENDPOINT
+          value: unix:///var/lib/csi/sockets/pluginproxy/csi.sock
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: JUICEFS_MOUNT_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: JUICEFS_MOUNT_PATH
+          value: /var/lib/juicefs/volume
+        - name: JUICEFS_CONFIG_PATH
+          value: /var/lib/juicefs/config
+        image: juicedata/juicefs-csi-driver:v0.25.2
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /healthz
+            port: healthz
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 3
+        name: juicefs-plugin
+        ports:
+        - containerPort: 9909
+          name: healthz
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 512Mi
+        securityContext:
+          capabilities:
+            add:
+            - SYS_ADMIN
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/csi/sockets/pluginproxy/
+          name: socket-dir
+        - mountPath: /jfs
+          mountPropagation: Bidirectional
+          name: jfs-dir
+        - mountPath: /root/.juicefs
+          mountPropagation: Bidirectional
+          name: jfs-root-dir
+        - mountPath: /etc/config
+          name: juicefs-config
+      - args:
+        - --csi-address=$(ADDRESS)
+        - --timeout=60s
+        - --leader-election
+        - --v=5
+        env:
+        - name: ADDRESS
+          value: /var/lib/csi/sockets/pluginproxy/csi.sock
+        image: registry.k8s.io/sig-storage/csi-provisioner:v2.2.2
+        imagePullPolicy: IfNotPresent
+        name: csi-provisioner
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/csi/sockets/pluginproxy/
+          name: socket-dir
+      - args:
+        - --csi-address=$(ADDRESS)
+        - --leader-election
+        - --v=2
+        env:
+        - name: ADDRESS
+          value: /var/lib/csi/sockets/pluginproxy/csi.sock
+        image: registry.k8s.io/sig-storage/csi-resizer:v1.9.0
+        imagePullPolicy: IfNotPresent
+        name: csi-resizer
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/csi/sockets/pluginproxy/
+          name: socket-dir
+      - args:
+        - --csi-address=$(ADDRESS)
+        - --health-port=$(HEALTH_PORT)
+        env:
+        - name: ADDRESS
+          value: /csi/csi.sock
+        - name: HEALTH_PORT
+          value: "9909"
+        image: registry.k8s.io/sig-storage/livenessprobe:v2.11.0
+        imagePullPolicy: IfNotPresent
+        name: liveness-probe
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /csi
+          name: socket-dir
+      dnsPolicy: ClusterFirst
+      priorityClassName: system-cluster-critical
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: juicefs-csi-controller-sa
+      serviceAccountName: juicefs-csi-controller-sa
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      volumes:
+      - emptyDir: {}
+        name: socket-dir
+      - hostPath:
+          path: /var/lib/juicefs/volume
+          type: DirectoryOrCreate
+        name: jfs-dir
+      - hostPath:
+          path: /var/lib/juicefs/config
+          type: DirectoryOrCreate
+        name: jfs-root-dir
+      - configMap:
+          defaultMode: 420
+          name: juicefs-csi-driver-config
+        name: juicefs-config
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
+status:
+  availableReplicas: 0
+  collisionCount: 0
+  currentReplicas: 1
+  currentRevision: juicefs-csi-controller-c859d6496
+  observedGeneration: 1
+  replicas: 1
+  updateRevision: juicefs-csi-controller-c859d6496
+  updatedReplicas: 1
