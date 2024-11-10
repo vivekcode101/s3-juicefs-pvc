@@ -1,0 +1,38 @@
+image:
+  repository: juicedata/juicefs-csi-driver
+  tag: "v0.25.2"
+  pullPolicy: ""
+
+globalConfig:
+  enabled: true
+
+storageClasses:
+- name: "juicefs-sc"
+  enabled: true
+  reclaimPolicy: Retain
+  allowVolumeExpansion: true
+  backend:
+    name: "juicefsfors3"
+    metaurl: "redis://127.0.0.1:6379/0"
+    storage: "s3"
+    bucket: "https://internbucketjuicefs.s3.us-east-1.amazonaws.com"
+    accessKey: "<>"
+    secretKey: "<>"
+
+serviceAccount:
+  controller:
+    create: true
+    name: "juicefs-csi-controller-sa"
+  node:
+    create: true
+    name: "juicefs-csi-node-sa"
+
+controller:
+  enabled: true
+  provisioner: true
+
+node:
+  enabled: true
+
+mountOptions:
+  - debug  

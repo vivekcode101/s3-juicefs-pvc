@@ -23,4 +23,3 @@ spec:
   claimRef:
     namespace: default
     name: juicefs-pvc
-

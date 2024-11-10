@@ -8,4 +8,3 @@ discovery:
       - "sha256:abe4661a0d3d1a94ba2707b79cb9525b675e3e20f02b376dadfc07d7e6b038bb"
 nodeRegistration:
   criSocket: "unix:///var/run/cri-dockerd.sock"
-
