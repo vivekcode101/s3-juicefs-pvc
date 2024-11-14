@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: juicefs-app
+  namespace: default
+spec:
+  containers:
+  - args:
+    - -c
+    - while true; do echo $(date -u) >> /data/out.txt; sleep 5; done
+    command:
+    - /bin/sh
+    image: centos
+    name: app
+    volumeMounts:
+    - mountPath: /data
+      name: data
+      # Propagation must be added for automatic mount point recovery (if Mount Pod ever fails)
+      mountPropagation: HostToContainer
+    - mountPath: /root/.juicefs
+      name: juicefs-config-volume  # Mounting the ConfigMap here
+    resources:
+      requests:
+        cpu: 10m
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: juicefs-pvc
+  - name: juicefs-config-volume  # Adding the ConfigMap volume
+    configMap:
+      name: juicefs-config  # Name of the ConfigMap created earlier

@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: juicefs-config
+  namespace: default  # Change this to your desired namespace if needed
+data:
+  demo-juicefs-vol.conf: |
+    {
+      "master": "aws-us-east-1-4.meta.juicefs.com:9405",
+      "master_ip": [
+        "54.156.14.70",
+        "34.234.156.35",
+        "52.55.76.242"
+      ],
+      "rootname": "demo-juicefs-vol",
+      "password": "generated password",
+      "uuid": "<>",
+      "storage": "s3",
+      "region": "us-east-1",
+      "token": "generated token",
+      "bucket": "<>",
+      "accesskey": "your access key",
+      "secretkey": "your secret key",
+      "accesskey2": null,
+      "secretkey2": null,
+      "aksk_encrypted": true,
+      "blockdevs": [],
+      "tested": 1,
+      "cfg_url": "<>",
+      "blockSize": 4096,
+      "partitions": 256,
+      "compress": "none",
+      "no_encrypt": true
+    }

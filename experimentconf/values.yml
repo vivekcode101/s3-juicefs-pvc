@@ -6,19 +6,6 @@ image:
 globalConfig:
   enabled: true
 
-storageClasses:
-- name: "juicefs-sc"
-  enabled: true
-  reclaimPolicy: Retain
-  allowVolumeExpansion: true
-  backend:
-    name: "juicefsfors3"
-    metaurl: "redis://127.0.0.1:6379/0"
-    storage: "s3"
-    bucket: "https://internbucketjuicefs.s3.us-east-1.amazonaws.com"
-    accessKey: "<>"
-    secretKey: "<>"
-
 serviceAccount:
   controller:
     create: true

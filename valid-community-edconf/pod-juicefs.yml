@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: locals3-juicefs-app
+  namespace: default
+spec:
+  containers:
+  - image: centos
+    name: app
+    command: ["/bin/bash", "-c", "tail -f /dev/null"]  # Keeps the container running
+    volumeMounts:
+    - mountPath: /data
+      name: <get the pv name after pvc is created>
+  volumes:
+  - name: <get the pv name after pvc is created>
+    persistentVolumeClaim:
+      claimName: locals3-juicefs-pvc
+

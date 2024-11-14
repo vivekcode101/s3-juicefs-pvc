@@ -10,12 +10,17 @@ spec:
     - while true; do echo $(date -u) >> /data/out.txt; sleep 5; done
     command:
     - /bin/sh
-    image: busybox
+    image: centos
     name: app
     volumeMounts:
     - mountPath: /data
-      name: pvc-c0f16509-30ba-46ef-8a46-94af3eed11bc
+      name: data
+      # Propagation must be added for automatic mount point recovery (if Mount Pod ever fails)
+      mountPropagation: HostToContainer
+    resources:
+      requests:
+        cpu: 10m
   volumes:
-  - name: pvc-c0f16509-30ba-46ef-8a46-94af3eed11bc
+  - name: data
     persistentVolumeClaim:
       claimName: juicefs-pvc
