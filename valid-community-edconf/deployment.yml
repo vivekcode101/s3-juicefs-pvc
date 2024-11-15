@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-juicefs-app
+  namespace: default
+  labels:
+    app: juicefs-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: juicefs-app
+  template:
+    metadata:
+      labels:
+        app: juicefs-app
+    spec:
+      containers:
+      - image: centos
+        name: app
+        command: ["/bin/bash", "-c", "tail -f /dev/null"]  # Keeps the container running
+        volumeMounts:
+        - mountPath: /data
+          name: <get the pv name after pvc is created>
+      volumes:
+      - name: <get the pv name after pvc is created>
+        persistentVolumeClaim:
+          claimName: locals3-juicefs-pvc
